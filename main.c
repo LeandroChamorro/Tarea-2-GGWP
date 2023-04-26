@@ -6,6 +6,26 @@
 #include "Map.h"
 #include "Stack.h"
 
+typedef struct{
+  int cantitems;
+  int ph;
+  List *items;
+  Stack *pilaAcc;
+  char nombreJugador[100];
+}TipoJugador;
+
+typedef struct{
+  bool accion; //True == Item ; False == ph
+  bool itemMas; //True == se Añadió ; False == Se eliminó
+  char item[100];
+  int ph;
+}TipoAccion;
+
+typedef struct{
+  char jugador[100];
+  int cont;
+}tipoItemCont;
+
 //FUNCIONES SECUNDARIAS
 
 //Confirmar longitud menor a 30
@@ -28,6 +48,8 @@ void solicitarString(char *cadena, const char *mensaje){
 }
 
 //FUNCIONES PRINCIPALES
+
+
 
 
 //Menú principal
