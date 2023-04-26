@@ -82,6 +82,55 @@ void insertarJugador(List *jugadores){
 }
 
 
+//Opción 2
+void mostrarJugador(List *lista){
+  //Se lee el nombre del jugador
+  char nombre[100];
+  solicitarString(nombre, "Ingrese el nombre del Jugador:");
+  
+  //Se crea un puntero para almacenar los datos del jugador
+  TipoJugador *jugador=(TipoJugador*) buscarJugador(lista,nombre);
+
+  //Si el jugador existe, osea no es "NULL"
+  printf("╔═════════════════════════════════════════════════════════════╗\n");
+  if (jugador != NULL)
+  {
+    //Se mostrará por pantalla el nombre y puntos de habilidad del jugador 
+    printf("  Nombre: %52s\n", jugador->nombreJugador);
+    printf("  Puntos de Habilidad: %39i\n", jugador->ph);
+
+
+    char *actual = firstList(jugador->items);
+    if(actual != NULL){
+      
+      //Se muestra por pantalla el primer item
+      printf("  Items/s:");
+      char item[100];
+      strcpy(item,actual);
+      printf("%52s\n",item);
+
+      while(actual!=NULL){
+        actual = nextList(jugador->items);
+        if(actual!=NULL) {//Se comprueba que no se ha acabado la lista
+          strcpy(item , actual);
+          printf(" %61s\n",item);
+        }
+      }
+      
+      printf("╚═════════════════════════════════════════════════════════════╝\n");
+      return;
+    }
+    else{//Si actual es NULL, no tiene items
+      printf("║ El jugador no tiene items registrados                       ║\n");
+      printf("╚═════════════════════════════════════════════════════════════╝\n\n");
+    }
+  }
+  else{
+    //Se avisa si el jugador no se encuentra registrado en el sistema
+    printf("║ El Jugador no se encuentra registrado.                     ║\n");
+    printf("╚═════════════════════════════════════════════════════════════╝\n\n");
+  }
+}
 
 
 //Menú principal
