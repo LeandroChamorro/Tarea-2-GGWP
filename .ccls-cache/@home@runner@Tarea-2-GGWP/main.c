@@ -47,6 +47,17 @@ void solicitarString(char *cadena, const char *mensaje){
   confirmarCaracteres(cadena);
 }
 
+//Buscar un jugador
+TipoJugador* buscarJugador(List *lista, char *nombre){
+  for (TipoJugador* p = firstList(lista) ; p != NULL ; p = nextList(lista)){
+      //Se busca si el nombre coincide
+      if (strcmp(p->nombreJugador, nombre) == 0){
+        return p;
+      }
+    }
+  return NULL;
+}
+
 //FUNCIONES PRINCIPALES
 
 //Opción 1
