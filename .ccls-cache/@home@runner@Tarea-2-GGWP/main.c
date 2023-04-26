@@ -6,6 +6,30 @@
 #include "Map.h"
 #include "Stack.h"
 
+//FUNCIONES SECUNDARIAS
+
+//Confirmar longitud menor a 30
+void confirmarCaracteres(char *cadena){
+  if(strlen(cadena)>=30) 
+  //En caso de ser mayor a 30,  le pide al usuario que ingrese una de menor tamaño hasta que la ingresa
+  while(strlen(cadena)>=30){
+    printf("Ingrese una cantidad de caracteres menor a 30");
+    scanf("%s", cadena);
+  } 
+}
+
+//Ingresar una cadena
+void solicitarString(char *cadena, const char *mensaje){
+  printf("%s\n", mensaje);
+  fflush(stdin);
+  scanf("%[^\n]s", cadena);
+  getchar();
+  confirmarCaracteres(cadena);
+}
+
+//FUNCIONES PRINCIPALES
+
+
 //Menú principal
 void menu(List *jugadores,Map*mapaItems){
   //Se crea una variable "opcion" la cual será una condicionante para el ciclo "while" base de nuestro programa
