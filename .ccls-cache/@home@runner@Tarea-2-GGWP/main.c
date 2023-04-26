@@ -188,6 +188,39 @@ void procesoInsertarItem(List* jugadores, Map* mapaItems){
   printf("El jugador no existe\n\n");
 }
 
+//Opción 4
+void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
+  char basura[100];
+  solicitarString(basura,"Inserte nombre del item que desea eliminar\n");
+
+  //Se busca el item en la lista de items del jugador, si se encuentra se elimina
+  for (char *item = firstList(idPlayer->items) ; item != NULL ; item = nextList(idPlayer->items)){
+    if(strcmp(item,basura)==0){
+      popCurrent(idPlayer->items);
+      //Se confirma que el item existe, para eliminar al jugador de la lista correspondiente
+      // a la clave del item del mapa de items
+      idPlayer->cantitems --;
+      return;
+    }
+  }
+  // en caso de no entrar en ningun caso anterior se le avisa al usuario que ese item no se encuentra
+  printf("El item que desea eliminar no existe o no lo posee este jugador\n\n");
+}
+
+void EliminarItem (List *jugadores, Map *mapaItems){
+  //Se pide el nombre de jugador
+  char idPlayer[100];
+  solicitarString(idPlayer,"Inserte nombre de jugador\n");
+
+  //Se busca al jugador en la lista de jugadores, si no existe se avisa, si se encuentra llama a la funcion
+  //erasedproces
+  TipoJugador *jugador=(TipoJugador*)buscarJugador(jugadores,idPlayer);
+  if (jugador != NULL){
+    erasedproces(jugador, mapaItems);
+    return;
+  }
+  printf("El jugador no existe\n\n");
+}
 
 
 
@@ -222,7 +255,7 @@ void menu(List *jugadores,Map*mapaItems){
       case 3: procesoInsertarItem(jugadores,mapaItems);
       break;
 
-      case 4: //EliminarItem(jugadores, mapaItems);
+      case 4: EliminarItem(jugadores, mapaItems);
       break;
       
       case 5: //agregarPh(jugadores);
