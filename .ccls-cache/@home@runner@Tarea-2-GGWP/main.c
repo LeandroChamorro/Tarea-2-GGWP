@@ -132,6 +132,30 @@ void mostrarJugador(List *lista){
   }
 }
 
+//Opción 3
+void insertaItem(TipoJugador *jugador, Map *mapaItems){
+  char item[100];
+  printf("Ingrese el nombre del %i item:", jugador->cantitems+1);
+  solicitarString(item,"");
+  
+  //Se inserta el item en la lista de items del jugador
+  pushBack(jugador->items, strdup(item));
+  //se agregó y se suma la cantidad total de items
+  jugador->cantitems++;
+}
+
+void procesoInsertarItem(List* jugadores, Map* mapaItems){
+  char nombre[100];
+  solicitarString(nombre,"Inserte nombre de jugador\n");
+
+  TipoJugador *jugador=(TipoJugador*)buscarJugador(jugadores,nombre);
+  if (jugador != NULL){
+    insertaItem(jugador, mapaItems);
+    return;
+  }
+  printf("El jugador no existe\n\n");
+}
+
 
 //Menú principal
 void menu(List *jugadores,Map*mapaItems){
@@ -155,13 +179,13 @@ void menu(List *jugadores,Map*mapaItems){
     getchar();
     //Se utiliza un switch para acceder a las opciones de cada función
     switch(opcion){
-      case 1: //insertarJugador(jugadores);
+      case 1: insertarJugador(jugadores);
       break; 
             
-      case 2: //mostrarJugador(jugadores);
+      case 2: mostrarJugador(jugadores);
       break;
           
-      case 3: //procesoInsertarItem(jugadores,mapaItems);
+      case 3: procesoInsertarItem(jugadores,mapaItems);
       break;
 
       case 4: //EliminarItem(jugadores, mapaItems);
