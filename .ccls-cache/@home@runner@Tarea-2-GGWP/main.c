@@ -142,6 +142,38 @@ void insertaItem(TipoJugador *jugador, Map *mapaItems){
   pushBack(jugador->items, strdup(item));
   //se agregó y se suma la cantidad total de items
   jugador->cantitems++;
+
+  //PARA PROXIMA FUNCIÓN 6
+  //Hay que insertar el jugador en la lista vinculada a cada item del mapa
+  
+  tipoItemCont *jugadorxCont=malloc(sizeof(tipoItemCont));
+  strcpy(jugadorxCont->jugador,jugador->nombreJugador);
+  
+  //Se busca la lista de jugadores, se manipulará como el valor de la llave
+  List* itemActual = (List*) searchMap(mapaItems,item);
+  if(itemActual!=NULL){
+    // El item está en el mapa y por lo tanto tambien su lista con los jugadores correspondientes 
+    //al item, habría que verificar que el jugador que se añadirá a la lista ya está en esta.
+    for (tipoItemCont *aux = firstList(itemActual) ; aux  != NULL ; aux = nextList(itemActual)){
+      if(strcmp(aux->jugador, jugadorxCont->jugador)==0){
+        aux->cont ++;
+        return;
+      }
+    }
+    jugadorxCont->cont=1;
+    pushBack(itemActual, jugadorxCont);
+  }
+  else{
+    // Como el item no está en el mapa, se crea la lista de jugadores del item, se añade el
+    //jugador a la lista y se inserta todo en el mapa
+    itemActual = createList();
+    tipoItemCont *aux=malloc(sizeof(tipoItemCont));
+    strcpy(aux->jugador,jugador->nombreJugador);
+    aux->cont = 1;
+    pushBack(itemActual,aux);
+    insertMap(mapaItems, item, itemActual);
+  }
+  
 }
 
 void procesoInsertarItem(List* jugadores, Map* mapaItems){
@@ -155,6 +187,8 @@ void procesoInsertarItem(List* jugadores, Map* mapaItems){
   }
   printf("El jugador no existe\n\n");
 }
+
+
 
 
 //Menú principal
