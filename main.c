@@ -49,6 +49,27 @@ void solicitarString(char *cadena, const char *mensaje){
 
 //FUNCIONES PRINCIPALES
 
+//Opción 1
+void insertarJugador(List *jugadores){
+  TipoJugador *jugador;
+  jugador=malloc(sizeof(TipoJugador));
+  
+  //nombre 
+  solicitarString(jugador->nombreJugador, "Ingrese el nombre del jugador:");
+  
+  //Inicializar puntos de habilidad en 0
+  jugador->ph = 0;
+
+  //Crear lista de items vacía items
+  jugador->items=createList();
+  
+  //Se agrega el jugador a la lista de jugadores
+  pushBack(jugadores, jugador);
+
+  // Se crea su pila de acciones
+  jugador->pilaAcc= stack_create();
+}
+
 
 
 
