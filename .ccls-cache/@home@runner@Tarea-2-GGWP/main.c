@@ -258,6 +258,22 @@ void EliminarItem (List *jugadores, Map *mapaItems){
   printf("El jugador no existe\n\n");
 }
 
+//Opción 5
+void agregarPh(List *jugadores){
+  char nombre[100];
+  solicitarString(nombre,"Inserte nombre de jugador\n");
+
+  TipoJugador *jugador=(TipoJugador*)buscarJugador(jugadores,nombre);
+  if (jugador != NULL){
+    int newPh;
+    printf("Inserte puntos de habilidad a ingresar");
+    scanf("%i", &newPh);
+    jugador->ph = jugador->ph + newPh;
+    
+    return;
+  }
+  printf("El jugador no existe\n\n");
+}
 
 
 //Menú principal
@@ -295,7 +311,7 @@ void menu(List *jugadores,Map*mapaItems){
       case 4: EliminarItem(jugadores, mapaItems);
       break;
       
-      case 5: //agregarPh(jugadores);
+      case 5: agregarPh(jugadores);
       break;
         
       case 6: //ItemEspecifico(jugadores,mapaItems);
