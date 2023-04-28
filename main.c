@@ -236,6 +236,12 @@ void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
         }
       }
     }
+    TipoAccion *accionJugador=(TipoAccion *) malloc(sizeof(TipoAccion));
+  
+    accionJugador->accion=true;// true significa que corresponde a un item
+    accionJugador->itemMas=false;//false se elimino un item
+    strcpy(accionJugador->item,basura);
+    stack_push(idPlayer->pilaAcc, accionJugador);
     return;
   }
   // en caso de no entrar en ningun caso anterior se le avisa al usuario que ese item no se encuentra
@@ -269,6 +275,11 @@ void agregarPh(List *jugadores){
     printf("Inserte puntos de habilidad a ingresar");
     scanf("%i", &newPh);
     jugador->ph = jugador->ph + newPh;
+
+    TipoAccion *accionJugador=(TipoAccion *) malloc(sizeof(TipoAccion));
+    accionJugador->accion=false;// False significa que corresponde a ph
+    accionJugador->ph = newPh;//false se elimino un item
+    stack_push(jugador->pilaAcc, accionJugador);
     
     return;
   }
