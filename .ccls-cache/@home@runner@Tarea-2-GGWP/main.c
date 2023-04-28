@@ -277,8 +277,8 @@ void agregarPh(List *jugadores){
     jugador->ph = jugador->ph + newPh;
 
     TipoAccion *accionJugador=(TipoAccion *) malloc(sizeof(TipoAccion));
-    accionJugador->accion=false;// False significa que corresponde a ph
-    accionJugador->ph = newPh;//false se elimino un item
+    accionJugador->accion=false; // False significa que corresponde a ph
+    accionJugador->ph = newPh; //puntos de habilidad agregados
     stack_push(jugador->pilaAcc, accionJugador);
     
     return;
