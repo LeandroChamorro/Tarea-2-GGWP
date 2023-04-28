@@ -28,6 +28,12 @@ typedef struct{
 
 //FUNCIONES SECUNDARIAS
 
+//Comparar Cadenas
+int is_equal_string(void * key1, void * key2) {
+    if(strcmp((char*)key1, (char*)key2)==0) return 1;
+    return 0;
+}
+
 //Confirmar longitud menor a 30
 void confirmarCaracteres(char *cadena){
   if(strlen(cadena)>=30) 
@@ -173,7 +179,13 @@ void insertaItem(TipoJugador *jugador, Map *mapaItems){
     pushBack(itemActual,aux);
     insertMap(mapaItems, item, itemActual);
   }
+
+  TipoAccion *accionJugador=(TipoAccion *) malloc(sizeof(TipoAccion));
   
+  accionJugador->accion=true;// true significa que corresponde a un item
+  accionJugador->itemMas=true;//true significa que se añadio
+  strcpy(accionJugador->item,item);
+  stack_push(jugador->pilaAcc, accionJugador);
 }
 
 void procesoInsertarItem(List* jugadores, Map* mapaItems){
@@ -235,7 +247,8 @@ void menu(List *jugadores,Map*mapaItems){
     printf("║ Si desea agregar un item de un jugador presione 3           ║\n");
     printf("║ Si desea eliminar un item de un jugador presione 4          ║\n");
     printf("║ Si desea agregar puntos de habilidad a un jugador presione 5║\n");
-    printf("║ Si desea mostrar todos los jugadores con un item en especifico presione 6║\n");
+    printf("║ Si desea mostrar todos los jugadores con un item            ║\n");
+    printf("║ en especifico presione 6                                    ║\n");
     printf("║ Si desea deshacer la última acción de un jugador presione 7 ║\n");
     printf("║ Si desea exportar datos de jugadores presione 8             ║\n");
     printf("║ Si desea importar datos de jugadores presione 9             ║\n");
