@@ -204,6 +204,7 @@ void procesoInsertarItem(List* jugadores, Map* mapaItems){
 void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
   char basura[100];
   solicitarString(basura,"Inserte nombre del item que desea eliminar\n");
+  bool esta = false;
 
   //Se busca el item en la lista de items del jugador, si se encuentra se elimina
   for (char *item = firstList(idPlayer->items) ; item != NULL ; item = nextList(idPlayer->items)){
@@ -211,13 +212,36 @@ void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
       popCurrent(idPlayer->items);
       //Se confirma que el item existe, para eliminar al jugador de la lista correspondiente
       // a la clave del item del mapa de items
-      idPlayer->cantitems --;
-      return;
+      esta=true;
     }
+  }
+  
+//se elimina el jugador de la lista de jugadores que tienen ese item en el mapa de items
+  if(esta==true){
+    //Se busca la lista correspondiente al item del mapa de items
+    List *listaItems = searchMap(Mapitems, basura);
+    //Como la lista está constituida por un tipo de variable tipoItemCont, esta variable guarda el nombre
+    //del jugador y la cantidad de veces que tiene ese item, se va revisando la lista hasta encontrar
+    //al jugador.
+    for (tipoItemCont *jugadorItem = firstList(listaItems) ; jugadorItem != NULL ; jugadorItem = nextList(listaItems)){
+      
+      if(strcmp(jugadorItem->jugador, idPlayer->nombreJugador)){
+        //Si lo encuentra y el jugador tiene 2 o mas veces ese item, solo se le quita uno al contador, en el 
+        //caso de que solo lo tenga una vez, se le hace popCurrent.
+        if(jugadorItem->cont>1){
+          jugadorItem->cont--;
+        }
+        else{
+          popCurrent(listaItems);
+        }
+      }
+    }
+    return;
   }
   // en caso de no entrar en ningun caso anterior se le avisa al usuario que ese item no se encuentra
   printf("El item que desea eliminar no existe o no lo posee este jugador\n\n");
 }
+
 
 void EliminarItem (List *jugadores, Map *mapaItems){
   //Se pide el nombre de jugador
