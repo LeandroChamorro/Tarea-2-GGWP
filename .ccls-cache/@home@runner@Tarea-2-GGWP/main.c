@@ -203,7 +203,7 @@ void insertaItem(TipoJugador *jugador, Map *mapaItems, bool archivo){
 
 void procesoInsertarItem(List* jugadores, Map* mapaItems){
   char nombre[100];
-  solicitarString(nombre,"Inserte nombre de jugador\n");
+  solicitarString(nombre,"Inserte nombre de jugador");
 
   TipoJugador *jugador=(TipoJugador*)buscarJugador(jugadores,nombre);
   if (jugador != NULL){
@@ -216,7 +216,7 @@ void procesoInsertarItem(List* jugadores, Map* mapaItems){
 //Opción 4
 void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
   char basura[100];
-  solicitarString(basura,"Inserte nombre del item que desea eliminar\n");
+  solicitarString(basura,"Inserte nombre del item que desea eliminar");
   bool esta = false;
 
   //Se busca el item en la lista de items del jugador, si se encuentra se elimina
@@ -246,6 +246,7 @@ void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
         }
         else{
           popCurrent(listaItems);
+          printf("El item fué eliminado");
         }
       }
     }
@@ -264,7 +265,7 @@ void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
 void EliminarItem (List *jugadores, Map *mapaItems){
   //Se pide el nombre de jugador
   char idPlayer[100];
-  solicitarString(idPlayer,"Inserte nombre de jugador\n");
+  solicitarString(idPlayer,"Inserte nombre de jugador");
 
   //Se busca al jugador en la lista de jugadores, si no existe se avisa, si se encuentra llama a la funcion
   //erasedproces
@@ -320,6 +321,62 @@ void ItemEspecifico(List *jugadores,Map *mapaItems){
   }
 }
 
+//Opción 7
+
+void deshacerAccion(List *jugadores,Map *mapaItems){
+  char nombre[100];
+  solicitarString(nombre, "Ingrese el nombre del Jugador:");
+
+  //Se crea un puntero para almacenar los datos del jugador
+  TipoJugador *jugador=(TipoJugador*) buscarJugador(jugadores,nombre);
+  if(jugador==NULL) printf("El jugador no se encuentra registrado\n");
+  
+  TipoAccion *accion = (TipoAccion *) stack_top(jugador->pilaAcc);
+
+  if(accion==NULL){
+    printf("El usuario no tiene acciones\n");
+    return;
+  }
+  if(accion->accion==true){
+    if(accion->itemMas == true){
+      popBack(jugador->items);
+      popFront(jugador->pilaAcc);
+      printf("El item ha sido eliminado correctamente del jugador\n");
+      List* itemActual = (void*)searchMap(mapaItems,accion->item);
+      for (tipoItemCont *aux = firstList(itemActual) ; aux  != NULL ; aux = nextList(itemActual)){
+        if(strcmp(aux->jugador, jugador->nombreJugador)==0){
+          aux->cont --;
+          if(aux->cont==0){
+            popCurrent(itemActual);
+            return;
+          }
+        }
+      }
+    }
+    else{
+      pushBack(jugador->items, accion->item);      
+      List* itemActual = (List*)searchMap(mapaItems,accion->item);
+      for (tipoItemCont *aux = firstList(itemActual) ; aux  != NULL ; aux = nextList(itemActual)){
+        if(strcmp(aux->jugador, jugador->nombreJugador)==0){
+          aux->cont ++;
+          return;
+        }
+      }
+      tipoItemCont *jugadorLista = (tipoItemCont *) malloc(sizeof(tipoItemCont));;
+      strcpy(jugadorLista->jugador, jugador->nombreJugador);
+      jugadorLista->cont++;
+      pushBack(itemActual, jugadorLista);
+    }
+  }
+  else{
+    int phRestar = accion->ph;
+    jugador->ph = jugador->ph - phRestar;
+    popFront(jugador->pilaAcc);
+    printf("Se actualizaron los puntos de habilidad con éxito\n");
+  }
+  return;
+}
+
 
 //Menú principal
 void menu(List *jugadores,Map*mapaItems){
@@ -359,16 +416,16 @@ void menu(List *jugadores,Map*mapaItems){
       case 5: agregarPh(jugadores);
       break;
         
-      case 6: //ItemEspecifico(jugadores,mapaItems);
+      case 6: ItemEspecifico(jugadores,mapaItems);
       break;
 
-      case 7: //deshacerAcción(jugadores,mapaItems);
+      case 7: deshacerAccion(jugadores,mapaItems);
       break;
     
-      case 8: //importarDatos(jugadores,mapaItems);
+      case 8: //exportarDatos(jugadores);
       break;
 
-      case 9: //exportarDatos(jugadores);
+      case 9: //importarDatos(jugadores,mapaItems);
       break;
       //en caso de ser cero se imprime lo sgte. Para finalizar el programa
       case 0:
