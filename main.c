@@ -299,6 +299,28 @@ void agregarPh(List *jugadores){
 }
 
 
+//Opción 6
+
+void ItemEspecifico(List *jugadores,Map *mapaItems){
+  char item[100];
+  printf("Ingrese el nombre del item:");
+  solicitarString(item,"");
+
+  
+  List* JugadoresxItem = searchMap(mapaItems,item);
+  
+  if(JugadoresxItem!=NULL && firstList(JugadoresxItem)!=NULL){
+    printf("Jugadores con el item: \n");
+    for (tipoItemCont *aux = firstList(JugadoresxItem) ; aux  != NULL ; aux = nextList(JugadoresxItem)){
+      printf("%s\n",aux->jugador);
+    }
+  }
+  else{
+    printf("No hay jugadores que posean este ítem\n");
+  }
+}
+
+
 //Menú principal
 void menu(List *jugadores,Map*mapaItems){
   //Se crea una variable "opcion" la cual será una condicionante para el ciclo "while" base de nuestro programa
@@ -337,7 +359,7 @@ void menu(List *jugadores,Map*mapaItems){
       case 5: agregarPh(jugadores);
       break;
         
-      case 6: //ItemEspecifico(jugadores,mapaItems);
+      case 6: ItemEspecifico(jugadores,mapaItems);
       break;
 
       case 7: //deshacerAcción(jugadores,mapaItems);
