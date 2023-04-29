@@ -312,7 +312,7 @@ void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
   // en caso de no entrar en ningun caso anterior se le avisa al usuario que ese item no se encuentra
   printf("El item que desea eliminar no existe o no lo posee este jugador\n\n");
 }
-
+    
 void EliminarItem (List *jugadores, Map *mapaItems){
   //Se pide el nombre de jugador
   char idPlayer[100];
@@ -328,7 +328,7 @@ void EliminarItem (List *jugadores, Map *mapaItems){
   printf("El jugador no existe\n\n");
 }
 
-//Opción 5
+//opcion 5
 void agregarPh(List *jugadores){
   char nombre[100];
   solicitarString(nombre,"Inserte nombre de jugador\n");
