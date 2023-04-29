@@ -65,6 +65,57 @@ TipoJugador* buscarJugador(List *lista, char *nombre){
   return NULL;
 }
 
+//Con esa función se obtienen las palabras entre comas o punto comas
+const char *get_csv_field(char *tmp, int k, char separator1, char separator2) {
+    static char *line = NULL;
+    static int line_size = 0;
+    int open_mark = 0;
+    char *ret = (char *) malloc(100 * sizeof(char));
+    int ini_i = 0, i = 0;
+    int j = 0;
+    char separator = separator1;
+    if (line == NULL) {
+        line_size = strlen(tmp);
+        line = (char *) malloc((line_size + 1) * sizeof(char));
+        strcpy(line, tmp);
+    } else if (strcmp(line, tmp) != 0) {
+        line_size = strlen(tmp);
+        line = (char *) realloc(line, (line_size + 1) * sizeof(char));
+        strcpy(line, tmp);
+    }
+    while (line[i + 1] != '\0') {
+        if (line[i] == '\"') {
+            open_mark = 1 - open_mark;
+            if (open_mark) ini_i = i + 1;
+            i++;
+            continue;
+        }
+        if (open_mark || (line[i] != separator1 && line[i] != separator2)) {
+            if (k == j) ret[i - ini_i] = line[i];
+            i++;
+            continue;
+        }
+        if (line[i] == separator1 || line[i] == separator2) {
+            if (k == j) {
+                ret[i - ini_i] = 0;
+                return ret;
+            }
+            j++;
+            ini_i = i + 1;
+            if (line[i] == separator1) {
+                separator = separator1;
+            } else {
+                separator = separator2;
+            }
+        }
+        i++;
+    }
+    if (k == j) {
+        ret[i - ini_i] = 0;
+        return ret;
+    }
+    return NULL;
+}
 
 //FUNCIONES PRINCIPALES
 
@@ -376,6 +427,87 @@ void deshacerAccion(List *jugadores,Map *mapaItems){
   }
   return;
 }
+
+//Opción 8 
+
+void importarArchivo(Map *mapaItems, List *jugadores){
+  char archivo[100];
+  //Se le pide al usuario que ingrese el nombre del archivo de donde desea importar a los jugadores
+  printf("Ingrese el nombre del archivo que quiere ingresar:\n");
+  fflush(stdin);
+  scanf("%[^\n]s",archivo);
+  getchar();
+
+  //Se abre el archivo
+  FILE *fp=fopen(archivo, "r");
+  if(fp==NULL){
+    printf("===============================================================\n");
+    printf("                   Error al importar archivo...\n");
+    printf("     Asegúrese de importar al programa con el mismo nombre\n");
+    printf("===============================================================\n");
+    return;
+  }
+  char linea[801];
+
+  //Se obtiene la primera línea (Que no nos sirve porque son las descripciones de las columnas)
+  fgets(linea,800,fp);
+
+  //A partir de aqui las lineas son importante porque tienen la información que necesitamos
+  while(fgets(linea,800,fp)!=NULL){
+    //Es un jugador por linea, por lo que aquí se crea
+    TipoJugador *jugador;
+    jugador=malloc(sizeof(TipoJugador));
+    int j=0;
+
+    //Con esa función se obtienen las palabras entre comas o punto comas
+    while(get_csv_field(linea, j, ',', ';')!=NULL){
+
+      //Se le asigna a un auxiliar la palabra, que va cambiando por columna, en la primera es el nombre del jugador, en la segunda son los puntos de habilidad, dependiendo de lo que sea se lleva un contador para asignarle toda la información al jugador.
+      char *aux =(char *) get_csv_field(linea, j, ',', ';');
+      if(aux==NULL) break;
+      
+      if(j==0){
+        strcpy(jugador->nombreJugador,aux);
+        //Se agrega el jugador a la lista de jugadores
+        pushBack(jugadores, jugador);
+        // Se crea su pila de acciones
+        jugador->pilaAcc= stack_create();
+      }
+      if(j==1){
+        //Se guardan los puntos de habilidad
+        jugador->ph=atoi(aux);
+        TipoAccion *accion=malloc(sizeof(TipoAccion));
+        accion->accion=false;
+        accion->ph=jugador->ph;
+        //Se guarda la acción en la pila de acciones
+        stack_push(jugador->pilaAcc,accion);
+      }
+      if(j==2){
+        //Se le asigna la cantidad de items al jugador
+        jugador->cantItems=atoi(aux);
+      }
+      if(j==3){
+        //Se inserta el primer ítem
+        jugador->items=createList();
+        pushBack(jugador->items, aux);
+        insertaItem(jugador, mapaItems, jugadores, true);
+      }
+      if(j>=4){
+        //Se insertan el resto de item
+        pushBack(jugador->items, aux);
+        insertaItem(jugador, mapaItems, jugadores, true);
+      }
+      j++;
+    }
+    pushBack(jugadores, jugador);
+  }
+  printf("===============================================================\n");
+  printf("        La importación de jugadores fue hecha con éxito\n");
+  printf("===============================================================\n");
+  fclose(fp);
+}
+
+
 // opcion 9
 
 void exportarDatos(List *jugadores){
@@ -466,10 +598,10 @@ void menu(List *jugadores,Map*mapaItems){
       case 7: deshacerAccion(jugadores,mapaItems);
       break;
     
-      case 8: //exportarDatos(jugadores);
+      case 8: exportarDatos(jugadores);
       break;
 
-      case 9: //importarDatos(jugadores,mapaItems);
+      case 9: importarDatos(jugadores,mapaItems);
       break;
       //en caso de ser cero se imprime lo sgte. Para finalizar el programa
       case 0:
