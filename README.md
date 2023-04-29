@@ -25,12 +25,12 @@ La opción 6 se encarga de mostrar todos los jugadores que tiene determinado ít
 Esta opción se encargará de deshacer la última acción que haya realizado el usuario respecto a cualquier jugador, esto mediante el ingreso de este último por el usuario, donde, mediante al acceso a la pila de acciones que se hicieron respecto al jugador,
 se procederá a eliminar la determinada acción que se haya realizado.
 //Opción 8
-Al momento de importar la información, se le pide al usuario que ingrese el nombre del archivo tal cual está subido al programa, incluyendo la extención del archivo, por ejemplo, si el archivo es "players10000.csv", ingresarlo tal y como es, incluyendo la terminación del archivo ".csv".
-//Opción 9
-La opción 9 exporta todos los pacientes a un archivo de la terminación que deseemos conveniente, en este caso, si lo pide con terminación ".csv"
+La opción 8 exporta todos los jugadores a un archivo de la terminación que deseemos conveniente, en este caso, si lo pide con terminación ".csv"
 simplemente deberá escribirlo al final. Por ejemplo, si mi archivo 
 lo quiero nombrar como "players", para que sea terminación ".csv" 
 simplemente debo agregarlo al final, el resultado será "players.csv".
+//Opción 9
+Al momento de importar la información, se le pide al usuario que ingrese el nombre del archivo tal cual está subido al programa, incluyendo la extención del archivo, por ejemplo, si el archivo es "players10000.csv", ingresarlo tal y como es, incluyendo la terminación del archivo ".csv".
 
 Al testear, todas la opciones funcionan correctamente. :)
 
