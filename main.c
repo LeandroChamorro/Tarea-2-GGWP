@@ -7,7 +7,7 @@
 #include "Stack.h"
 
 typedef struct{
-  int cantitems;
+  int cantItems;
   int ph;
   List *items;
   Stack *pilaAcc;
@@ -25,6 +25,7 @@ typedef struct{
   char jugador[100];
   int cont;
 }tipoItemCont;
+
 
 //FUNCIONES SECUNDARIAS
 
@@ -64,6 +65,7 @@ TipoJugador* buscarJugador(List *lista, char *nombre){
   return NULL;
 }
 
+
 //FUNCIONES PRINCIPALES
 
 //Opción 1
@@ -71,12 +73,15 @@ void insertarJugador(List *jugadores){
   TipoJugador *jugador;
   jugador=malloc(sizeof(TipoJugador));
   
-  //nombre 
+  //Ingresar nombre 
   solicitarString(jugador->nombreJugador, "Ingrese el nombre del jugador:");
   
   //Inicializar puntos de habilidad en 0
   jugador->ph = 0;
 
+  //Inicializar cantidad de items del jugador en 0
+  jugador->cantItems=0;
+  
   //Crear lista de items vacía items
   jugador->items=createList();
   
@@ -139,15 +144,20 @@ void mostrarJugador(List *lista){
 }
 
 //Opción 3
-void insertaItem(TipoJugador *jugador, Map *mapaItems){
-  char item[100];
-  printf("Ingrese el nombre del %i item:", jugador->cantitems+1);
-  solicitarString(item,"");
+
+void insertaItem(TipoJugador *jugador, Map *mapaItems, bool archivo){
+  char *item=malloc(100*sizeof(char));
   
-  //Se inserta el item en la lista de items del jugador
-  pushBack(jugador->items, strdup(item));
-  //se agregó y se suma la cantidad total de items
-  jugador->cantitems++;
+  if(archivo==false){
+    printf("Ingrese el nombre del %i° item:", jugador->cantItems+1);
+    solicitarString(item,"");
+    //Se inserta el item en la lista de items del jugador
+    pushBack(jugador->items, strdup(item));
+    //se agregó y se suma la cantidad total de items
+    jugador->cantItems++;
+  }else{
+    strcpy(item,lastList(jugador->items));
+  }
 
   //PARA PROXIMA FUNCIÓN 6
   //Hay que insertar el jugador en la lista vinculada a cada item del mapa
@@ -156,7 +166,9 @@ void insertaItem(TipoJugador *jugador, Map *mapaItems){
   strcpy(jugadorxCont->jugador,jugador->nombreJugador);
   
   //Se busca la lista de jugadores, se manipulará como el valor de la llave
+  
   List* itemActual = (List*) searchMap(mapaItems,item);
+  
   if(itemActual!=NULL){
     // El item está en el mapa y por lo tanto tambien su lista con los jugadores correspondientes 
     //al item, habría que verificar que el jugador que se añadirá a la lista ya está en esta.
@@ -176,16 +188,17 @@ void insertaItem(TipoJugador *jugador, Map *mapaItems){
     tipoItemCont *aux=malloc(sizeof(tipoItemCont));
     strcpy(aux->jugador,jugador->nombreJugador);
     aux->cont = 1;
+    
     pushBack(itemActual,aux);
     insertMap(mapaItems, item, itemActual);
-  }
-
-  TipoAccion *accionJugador=(TipoAccion *) malloc(sizeof(TipoAccion));
   
-  accionJugador->accion=true;// true significa que corresponde a un item
-  accionJugador->itemMas=true;//true significa que se añadio
-  strcpy(accionJugador->item,item);
-  stack_push(jugador->pilaAcc, accionJugador);
+    TipoAccion *accionJugador=(TipoAccion *) malloc(sizeof(TipoAccion));
+    
+    accionJugador->accion=true;// true significa que corresponde a un item
+    accionJugador->itemMas=true;//true significa que se añadio
+    strcpy(accionJugador->item,item);
+    stack_push(jugador->pilaAcc, accionJugador);
+  }
 }
 
 void procesoInsertarItem(List* jugadores, Map* mapaItems){
@@ -194,7 +207,7 @@ void procesoInsertarItem(List* jugadores, Map* mapaItems){
 
   TipoJugador *jugador=(TipoJugador*)buscarJugador(jugadores,nombre);
   if (jugador != NULL){
-    insertaItem(jugador, mapaItems);
+    insertaItem(jugador, mapaItems, false);
     return;
   }
   printf("El jugador no existe\n\n");
@@ -225,7 +238,7 @@ void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
     //al jugador.
     for (tipoItemCont *jugadorItem = firstList(listaItems) ; jugadorItem != NULL ; jugadorItem = nextList(listaItems)){
       
-      if(strcmp(jugadorItem->jugador, idPlayer->nombreJugador)){
+      if(strcmp(jugadorItem->jugador, idPlayer->nombreJugador)==0){
         //Si lo encuentra y el jugador tiene 2 o mas veces ese item, solo se le quita uno al contador, en el 
         //caso de que solo lo tenga una vez, se le hace popCurrent.
         if(jugadorItem->cont>1){
@@ -247,7 +260,6 @@ void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
   // en caso de no entrar en ningun caso anterior se le avisa al usuario que ese item no se encuentra
   printf("El item que desea eliminar no existe o no lo posee este jugador\n\n");
 }
-
 
 void EliminarItem (List *jugadores, Map *mapaItems){
   //Se pide el nombre de jugador
@@ -334,30 +346,35 @@ void menu(List *jugadores,Map*mapaItems){
       case 8: //importarDatos(jugadores,mapaItems);
       break;
 
-      case 9: //exportarDatos(jugadores,mapaItems);
+      case 9: //exportarDatos(jugadores);
       break;
       //en caso de ser cero se imprime lo sgte. Para finalizar el programa
       case 0:
-        printf("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣤⣤⣤⣤⣤⣶⣦⣤⣄⡀\n");
-        printf("⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⡿⠛⠉⠙⠛⠛⠛⠛⠻⢿⣿⣷⣤⡀\n");
-        printf("⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⠋⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⠈⢻⣿⣿⡄\n");
-        printf("⠀⠀⠀⠀⠀⠀⠀⣸⣿⡏⠀⠀⠀⣠⣶⣾⣿⣿⣿⠿⠿⠿⢿⣿⣿⣿⣄\n");
-        printf("⠀⠀⠀⠀⠀⠀⠀⣿⣿⠁⠀⠀⢰⣿⣿⣯⠁⠀⠀⠀⠀⠀⠀⠀⠈⠙⢿⣷⡄\n");
-        printf("⠀⠀⣀⣤⣴⣶⣶⣿⡟⠀⠀⠀⢸⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣷\n");
-        printf("⠀⢰⣿⡟⠋⠉⣹⣿⡇⠀⠀⠀⠘⣿⣿⣿⣿⣷⣦⣤⣤⣤⣶⣶⣶⣶⣿⣿⣿\n");
-        printf("⠀⢸⣿⡇⠀⠀⣿⣿⡇⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃\n");
-        printf("⠀⣸⣿⡇⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠉⠻⠿⣿⣿⣿⣿⡿⠿⠿⠛⢻⣿⡇\n");
-        printf("⠀⣿⣿⠁⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣧\n");
-        printf("⠀⣿⣿⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿\n");
-        printf("⠀⣿⣿⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿\n");
-        printf("⠀⢿⣿⡆⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇\n");
-        printf("⠀⠸⣿⣧⡀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⠃\n");
-        printf("⠀⠀⠛⢿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⣰⣿⣿⣷⣶⣶⣶⣶⠶ ⢠⣿⣿\n");
-        printf("⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⠀⣽⣿⡏⠁⠀⠀⢸⣿⡇\n");
-        printf("⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⠀⢹⣿⡆⠀⠀⠀⣸⣿⠇\n");
-        printf("⠀⠀⠀⠀⠀⠀⠀⢿⣿⣦⣄⣀⣠⣴⣿⣿⠁⠀⠈⠻⣿⣿⣿⣿⡿⠏\n");
-        printf("⠀⠀⠀⠀⠀⠀⠀⠈⠛⠻⠿⠿⠿⠿⠋⠁\n");
-        printf("          Adiós by GG WP//");
+        printf("⠀⠀⠀⠀⠀⠀⠀⢀⣤⠖⠛⠉⠉⠛⠶⣄⡤⠞⠛⠛⠙⠳⢤⡀\n");
+        printf("⠀⠀⠀⠀⠀⠀⢠⠟⠁⠀⠀⠀⠀⠀⠀ ⠀⢰⡆⠀⠀⠐⡄⠻⡄\n");
+        printf("⠀⠀⠀⠀⠀⠀⡾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠦⠤⣤⣇ ⢷\n");
+        printf("⠀⠀⠀⠀⠀⠀⢳⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   ⡼\n");
+        printf("⠀⠀⠀⠀⠀⠀⠘⣆⢰⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⣼⠃\n");
+        printf("⠀⠀⠀⠀⠀⠀⠀⠙⣎⢳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡾⠃\n");
+        printf("⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⣝⠳⣄⡀⠀⠀⠀⠀⠀⢀⡴⠟⠁\n");
+        printf("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⢮⣉⣒⣖⣠⠴⠚⠉\n");
+        printf("⠀⠀⠀⣀⣴⠶⠶⢦⣀⠀⠀⠀⠀⠀⠉⠁⠀⠀⠀⠀ ⣠⣤⣤⣀⠀\n");
+        printf("⠀⢀⡾⠋⠀⠀⠀⠀⠉⠧⠶⠒⠛⠛⠛⠛⠓⠲⢤⣴⡟⠅⠀⠀⠈⠙⣦⠀\n");
+        printf("⠀⣾⠁⠀⠀⠀⠀⠀⠀⠀⣠⡄⠀⠀⠀⣀⠀⠀⠀ ⠀⠀⠀⠀⠀⠀⠸⣇\n");
+        printf("⠀⣿⡀⠀⠀⠀⠀⠀⢀⡟⢁⣿⠀⢠⠎⢙⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽\n");
+        printf("⠀⠈⢻⡇⠀⠀⠀⠀⣾⣧⣾⡃⠀⣾⣦⣾⠇⠀⠀⠀⠀⠀⠀⠀ ⠀⣼⠇\n");
+        printf("⠀⢰⡟⠀⡤⠴⠦⣬⣿⣿⡏⠀⢰⣿⣿⡿⢀⡄⠤⣀⡀⠀⠀⠀⠰⢿⡁\n");
+        printf("⠀⡞⠀⢸⣇⣄⣤⡏⠙⠛⢁⣴⡈⠻⠿⠃⢚⡀⠀⣨⣿⠀⠀⠀⠀⢸⡇\n");
+        printf("⢰⡇⠀⠀⠈⠉⠁⠀⠀⠀⠀⠙⠁⠀⠀⠀⠈⠓⠲⠟⠋⠀⠀⠀⠀⢀⡇\n");
+        printf("⠈⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠇\n");
+        printf("⠀⢹⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⡄\n");
+        printf("⠀⠀⠻⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⠋⣷\n");
+        printf("⠀⠀⢰⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠃⠀⣿⡇\n");
+        printf("⠀⠀⢸⡯⠈⠛⢶⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⠾⠋ ⠀⠀⣿⡇\n");
+        printf("⠀⠀⠈⣷    ⠉⠛⠶⢶⣶⠶⠶⢶⡶⠾⠛⠉⠀⠀⠀   ⣿⡇\n");
+        printf("⠀⠀⠀⠈⠳⣤  ⠀⣀⡶⠟⠁⠀⠀⠘⢷⡄⠀     ⢀⣾⡿\n");
+        printf("⠀⠀⠀⠀⠀⠈⠙⠛⠛⠋⠀⠀⠀⠀  ⠀⠙⠶⣤⣀⣀⣤⡶⠟⠁\n");
+        printf("         by GG WP//");
         break;
     }
   }
