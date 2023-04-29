@@ -135,12 +135,14 @@ void insertarJugador(List *jugadores){
   
   //Crear lista de items vacía items
   jugador->items=createList();
-  
-  //Se agrega el jugador a la lista de jugadores
-  pushBack(jugadores, jugador);
 
   // Se crea su pila de acciones
   jugador->pilaAcc= stack_create();
+
+  //Se agrega el jugador a la lista de jugadores
+  pushBack(jugadores, jugador);
+  
+  printf("Se registró exitosamente al jugador\n\n");
 }
 
 
@@ -210,11 +212,14 @@ void insertaItem(TipoJugador *jugador, Map *mapaItems, bool archivo){
     strcpy(item,lastList(jugador->items));
   }
 
+  printf("El ítem ha sido insertado con éxito\n\n");
+  
   //PARA PROXIMA FUNCIÓN 6
   //Hay que insertar el jugador en la lista vinculada a cada item del mapa
   
   tipoItemCont *jugadorxCont=malloc(sizeof(tipoItemCont));
   strcpy(jugadorxCont->jugador,jugador->nombreJugador);
+  
   
   //Se busca la lista de jugadores, se manipulará como el valor de la llave
   
@@ -279,7 +284,6 @@ void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
       esta=true;
     }
   }
-  
 //se elimina el jugador de la lista de jugadores que tienen ese item en el mapa de items
   if(esta==true){
     //Se busca la lista correspondiente al item del mapa de items
@@ -297,7 +301,7 @@ void erasedproces(TipoJugador *idPlayer, Map *Mapitems){
         }
         else{
           popCurrent(listaItems);
-          printf("El item fué eliminado");
+          printf("El item fué eliminado con éxito del jugador\n\n");
         }
       }
     }
@@ -390,6 +394,7 @@ void deshacerAccion(List *jugadores,Map *mapaItems){
   }
   if(accion->accion==true){
     if(accion->itemMas == true){
+      jugador->cantItems--;
       popBack(jugador->items);
       popFront(jugador->pilaAcc);
       printf("El item ha sido eliminado correctamente del jugador\n");
@@ -405,11 +410,13 @@ void deshacerAccion(List *jugadores,Map *mapaItems){
       }
     }
     else{
+      jugador->cantItems++;
       pushBack(jugador->items, accion->item);      
       List* itemActual = (List*)searchMap(mapaItems,accion->item);
       for (tipoItemCont *aux = firstList(itemActual) ; aux  != NULL ; aux = nextList(itemActual)){
         if(strcmp(aux->jugador, jugador->nombreJugador)==0){
           aux->cont ++;
+          printf("El ítem ha sido agregado nuevamente con éxito\n\n");
           return;
         }
       }
@@ -428,7 +435,7 @@ void deshacerAccion(List *jugadores,Map *mapaItems){
   return;
 }
 
-//Opción 8 
+//Opción 9 
 
 void importarArchivo(Map *mapaItems, List *jugadores){
   char archivo[100];
@@ -490,12 +497,12 @@ void importarArchivo(Map *mapaItems, List *jugadores){
         //Se inserta el primer ítem
         jugador->items=createList();
         pushBack(jugador->items, aux);
-        insertaItem(jugador, mapaItems, jugadores, true);
+        insertaItem(jugador, mapaItems, true);
       }
       if(j>=4){
         //Se insertan el resto de item
         pushBack(jugador->items, aux);
-        insertaItem(jugador, mapaItems, jugadores, true);
+        insertaItem(jugador, mapaItems, true);
       }
       j++;
     }
@@ -508,7 +515,7 @@ void importarArchivo(Map *mapaItems, List *jugadores){
 }
 
 
-// opcion 9
+// opcion 8
 
 void exportarDatos(List *jugadores){
   //Se crea una string estática para dar un nombre al archivo que exportará a los jugadores
@@ -601,7 +608,7 @@ void menu(List *jugadores,Map*mapaItems){
       case 8: exportarDatos(jugadores);
       break;
 
-      case 9: importarDatos(jugadores,mapaItems);
+      case 9: importarArchivo(jugadores,mapaItems);
       break;
       //en caso de ser cero se imprime lo sgte. Para finalizar el programa
       case 0:
