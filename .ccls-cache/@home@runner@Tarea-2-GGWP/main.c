@@ -376,7 +376,51 @@ void deshacerAccion(List *jugadores,Map *mapaItems){
   }
   return;
 }
+// opcion 9
 
+void exportarDatos(List *jugadores){
+  //Se crea una string estática para dar un nombre al archivo que exportará a los jugadores
+  
+  char archivo[100];
+  printf("Nombre al archivo que se creará:\n");
+  scanf("%[^\n]s",archivo);
+  getchar();
+  FILE *fp = fopen(archivo, "w");
+  
+  fprintf(fp, "Nombre,Puntos,#items,Item 1,Item 2,Item 3,Item 4,Item 5,Item 6,Item 7,Item 8\n");
+  //Se comienza a recorrer la lista jugaadores para imprimir los datos al archivo que se exportará todo
+  for (TipoJugador *player = firstList(jugadores) ; player != NULL ; player = nextList(jugadores)){
+    fprintf(fp, "%s,%d,%d,", player->nombreJugador, player->ph, player->cantItems);
+    
+    //Dentro de la iteración "for", se entra a otra, ya que puede existir el caso de que hayan más de un item
+    for(char* items=firstList(player->items) ; items!=NULL; items=nextList(player->items)){
+      
+      fprintf(fp, "%s,", items);
+    }
+    fprintf(fp, "\n");
+  }
+  
+  //De no haber errores, se muestra el siguiente mensaje por pantalla 
+  printf("===============================================================\n");
+  printf("        La exportación de jugadores fue hecha con éxito\n");
+  printf("▒▒▒▒▒▒▒▒▒▄▄▄▄▒▄▄▄▒▒▒\n");
+  printf("▒▒▒▒▒▒▄▀▀▓▓▓▀█░░░█▒▒\n");
+  printf("▒▒▒▒▄▀▓▓▄██████▄░█▒▒\n");
+  printf("▒▒▒▄█▄█▀░░▄░▄░█▀▀▄▒▒\n");
+  printf("▒▒▄▀░██▄░░▀░▀░▀▄▓█▒▒\n");
+  printf("▒▒▀▄░░▀░▄█▄▄░░▄█▄▀▒▒\n");
+  printf("▒▒▒▒▀█▄▄░░▀▀▀█▀▓█▒▒▒\n");
+  printf("▒▒▒▄▀▓▓▓▀██▀▀█▄▀▒▒▒▒\n");
+  printf("▒▒█▓▓▄▀▀▀▄█▄▓▓▀█▒▒▒▒\n");
+  printf("▒▒▀▄█░░░░░█▀▀▄▄▀█▒▒▒\n");
+  printf("▒▒▒▄▀▀▄▄▄██▄▄█▀▓▓█▒▒\n");
+  printf("▒▒█▀▓█████████▓▓▓█▒▒\n");
+  printf("▒▒█▓▓██▀▀▀▒▒▒▀▄▄█▀▒▒\n");
+  printf("▒▒▒▀▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒\n");
+  printf("===============================================================\n");
+  fclose(fp);
+  
+}
 
 //Menú principal
 void menu(List *jugadores,Map*mapaItems){
